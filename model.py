@@ -1,15 +1,14 @@
 import tensorflow as tf
 
-import tfops as Z
+import tfops as Z # novel implementaions mentioned in the paper is in tfops.py
 import optim
 import numpy as np
 import horovod.tensorflow as hvd
 from tensorflow.contrib.framework.python.ops import add_arg_scope
+"""
+hps: is the argument parser parameter input we get from train.py main function. 
+"""
 
-
-'''
-f_loss: function with as input the (x,y,reuse=False), and as output a list/tuple whose first element is the loss.
-'''
 
 
 def abstract_model_xy(sess, hps, feeds, train_iterator, test_iterator, data_init, lr, f_loss):
@@ -160,6 +159,9 @@ def model(sess, hps, train_iterator, test_iterator, data_init):
     def postprocess(x):
         return tf.cast(tf.clip_by_value(tf.floor((x + .5)*hps.n_bins)*(256./hps.n_bins), 0, 255), 'uint8')
 
+    '''
+    f_loss: function with as input the (x,y,reuse=False), and as output a list/tuple whose first element is the loss.
+    '''
     def _f_loss(x, y, is_training, reuse=False):
 
         with tf.variable_scope('model', reuse=reuse):
